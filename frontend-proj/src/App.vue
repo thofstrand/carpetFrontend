@@ -1,11 +1,21 @@
 <template>
-  <div class="panel">
-    <label for="image-upload">Upload an image:</label>
-    <input id="image-upload" type="file" accept="image/*" v-on:change="previewImage">
-    <div v-if="imagePreview">
-      <img :src="imagePreview" alt="Preview image" class="preview-image">
+  <div>
+    <div class="title">
+      <h1>Carpet Search</h1>
+    </div>
+    <div class="panel">
+      <label for="image-upload">Upload an image:</label>
+      <input id="image-upload" type="file" accept="image/*" v-on:change="previewImage">
+      <div v-if="imagePreview">
+        <img :src="imagePreview" alt="Preview image" class="preview-image">
+      </div>
+      
     </div>
   </div>
+  
+  
+  
+  
 </template>
 
 <script>
@@ -37,11 +47,18 @@ export default {
 </script>
 
 <style>
+.title{
+  padding: 0px;
+  padding-left: 350px;
+  color:#020000;
+  text-align:center;
+}
+
 .panel {
   position: absolute;
   top: 0;
   left: 0;
-  width: 250px;
+  width: 350px;
   height: 100%;
   background-color: #79acf8;
   padding: 20px;
@@ -50,7 +67,7 @@ export default {
 
 .preview-image {
   max-width: 100%;
-  max-height: 200px;
-  margin-top: 20px;
+  max-height: 300px;
+  margin-top: 30px;
 }
 </style>
