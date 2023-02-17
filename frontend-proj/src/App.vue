@@ -4,8 +4,9 @@
       <h1>Carpet Search</h1>
     </div>
     <div class="searchResultsContainer">
-      <div class="searchResults" v-for="result in searchResults" :key="result.id">
-        <img :src="imagePreview" alt="Preview image" class="preview-image">
+      <div class="searchResults" v-for="(result, index) in searchResults" :key="index">
+        <img :src="result.imgUrl" alt="Result image" class="result-image" @click="result.showHotelName = !result.showHotelName">
+        <div class="hotel-name" v-show="result.showHotelName">{{ result.hotelName }}</div>
 
       </div>
 
@@ -13,6 +14,7 @@
     <div class="panel">
       <label for="image-upload">Upload an image:</label>
       <input id="image-upload" type="file" accept="image/*" v-on:change="previewImage">
+      <button @click="makeApiRequest">Fetch Data</button>
       <div v-if="imagePreview">
         <img :src="imagePreview" alt="Preview image" class="preview-image">
       </div>
@@ -31,7 +33,7 @@ import { ref } from 'vue';
 export default {
   setup() {
     const imagePreview = ref(null);
-    const searchResults = "C:\\Users\\keerp\\Pictures\\bST.PNG"
+    const searchResults = ref([]);
 
     const previewImage = (event) => {
       const fileInput = event.target;
@@ -46,10 +48,37 @@ export default {
       }
     };
 
+    const makeApiRequest = () => {
+      if (!imagePreview.value) {
+        // The image preview is not set or is invalid, so we can't make the API request
+        console.log('Image Preview value incorrect');
+        return;
+      }
+
+      var axios = require('axios');
+      var config = {
+        method: 'get',
+        url: '/api/images/MostSimilarImages',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      };
+      axios(config)
+        .then(function (response) {
+          searchResults.value = response.data
+          console.log(searchResults.value)
+
+        })
+        .catch(function (error) {
+          console.log(error);
+        });
+    };
+
     return {
       imagePreview,
       previewImage,
-      searchResults
+      makeApiRequest,
+      searchResults,
     };
   },
 };
@@ -80,6 +109,16 @@ export default {
 .searchResults {
   max-width: 100%;
   max-height: 300px;
+  margin-top: 30px;
+}
+
+.result-image {
+  width: 150px;
+  height: 150px;
+}
+
+.hotel-name {
+  text-align: center;
   margin-top: 30px;
 }
 
