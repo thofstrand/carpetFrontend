@@ -65,7 +65,7 @@ export default {
         },
         data: {
           "imgEncoded": imagePreview.value,
-          "numMatches": 4,
+          "numMatches": 50,
         },
 
       
