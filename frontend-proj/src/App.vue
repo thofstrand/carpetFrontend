@@ -41,6 +41,7 @@ export default {
         const reader = new FileReader();
         reader.onload = () => {
           imagePreview.value = reader.result;
+          
         };
         reader.readAsDataURL(fileInput.files[0]);
       } else {
@@ -54,14 +55,20 @@ export default {
         console.log('Image Preview value incorrect');
         return;
       }
-
+     
       var axios = require('axios');
       var config = {
-        method: 'get',
+        method: 'POST',
         url: '/api/images/MostSimilarImages',
         headers: {
           'Content-Type': 'application/json',
         },
+        data: {
+          "imgEncoded": imagePreview.value,
+          "numMatches": 4,
+        },
+
+      
       };
       axios(config)
         .then(function (response) {
