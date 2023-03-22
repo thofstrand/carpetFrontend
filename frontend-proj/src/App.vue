@@ -5,9 +5,7 @@
     </div>
     <div class="searchResultsContainer">
       <div class="searchResults" v-for="(result, index) in searchResults" :key="index">
-        <img :src="result.imgUrl" alt="Result image" class="result-image" @click="result.showHotelName = !result.showHotelName">
-        <div class="hotel-name" v-show="result.showHotelName">{{ result.hotelName }}</div>
-
+        <img :src="result.imgUrl" alt="Result image" class="result-image" @click="selectedHotel = result">
       </div>
 
     </div>
@@ -18,7 +16,14 @@
       <div v-if="imagePreview">
         <img :src="imagePreview" alt="Preview image" class="preview-image">
       </div>
-      
+      <hr>
+      <div class="hotel-info" v-if="selectedHotel">
+        <h2>Selected Hotel Information</h2>
+        <div class="hotel-name">{{ selectedHotel.hotelName }}</div>
+        <div class="hotel-address">{{ selectedHotel.address }}</div>
+        <div class="hotel-phone">{{ selectedHotel.phone }}</div>
+        <div class="hotel-description">{{ selectedHotel.description }}</div>
+      </div>
     </div>
   </div>
   
@@ -34,6 +39,7 @@ export default {
   setup() {
     const imagePreview = ref(null);
     const searchResults = ref([]);
+    const selectedHotel = ref(null);
 
     const previewImage = (event) => {
       const fileInput = event.target;
@@ -86,12 +92,15 @@ export default {
       previewImage,
       makeApiRequest,
       searchResults,
+      selectedHotel,
     };
   },
 };
 </script>
 
 <style>
+
+
 .title{
   padding: 0px;
   padding-left: 350px;
@@ -127,6 +136,7 @@ export default {
 .hotel-name {
   text-align: center;
   margin-top: 30px;
+  cursor: pointer;
 }
 
 .panel {
@@ -138,6 +148,8 @@ export default {
   background-color: #79acf8;
   padding: 20px;
   box-sizing: border-box;
+  z-index: 1;
+  overflow-y: scroll;
 }
 
 .preview-image {
@@ -145,4 +157,26 @@ export default {
   max-height: 300px;
   margin-top: 30px;
 }
+
+.hotel-info-modal {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: #fff;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+  z-index: 2;
+  max-width: 400px;
+}
+
+.hotel-info-modal-close {
+  position: absolute;
+  top: 0;
+  right: 0;
+  margin: 10px;
+  cursor: pointer;
+}
+
 </style>
