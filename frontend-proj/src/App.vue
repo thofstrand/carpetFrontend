@@ -2,34 +2,34 @@
   <div>
     <div class="title">
       <h1>Carpet Search</h1>
+      
     </div>
     <div class="searchResultsContainer">
       <div class="searchResults" v-for="(result, index) in searchResults" :key="index">
-        <img :src="result.imgUrl" alt="Result image" class="result-image" @click="selectedHotel = result">
+        <img :src="result.imgUrl" alt="Result image" class="result-image" :class="{ selected: selectedHotel === result }" @click="selectedHotel = result">
       </div>
 
     </div>
     <div class="panel">
-      <label for="image-upload">Upload an image:</label>
-      <input id="image-upload" type="file" accept="image/*" v-on:change="previewImage">
-      <button @click="makeApiRequest">Fetch Data</button>
-      <div v-if="imagePreview">
-        <img :src="imagePreview" alt="Preview image" class="preview-image">
-      </div>
-      <hr>
-      <div class="hotel-info" v-if="selectedHotel">
-        <h2>Selected Hotel Information</h2>
-        <div class="hotel-name">{{ selectedHotel.hotelName }}</div>
-        <div class="hotel-address">{{ selectedHotel.address }}</div>
-        <div class="hotel-phone">{{ selectedHotel.phone }}</div>
-        <div class="hotel-description">{{ selectedHotel.description }}</div>
-      </div>
+  <label for="image-upload">Upload an image:</label>
+  <div class="image-upload-container">
+    <input id="image-upload" type="file" accept="image/*" v-on:change="previewImage">
+    <div v-if="imagePreview">
+      <img :src="imagePreview" alt="Preview image" class="preview-image">
+      <button class="fetch-data-button" @click="makeApiRequest">Fetch Data</button>
     </div>
   </div>
-  
-  
-  
-  
+  <hr>
+  <div class="hotel-info" v-if="selectedHotel">
+    <h2>Selected Hotel</h2>
+    <div class="hotel-name">{{ selectedHotel.hotelName }}</div>
+    <div class="hotel-address">{{ selectedHotel.address }}</div>
+    <div class="hotel-phone">{{ selectedHotel.phone }}</div>
+    <div class="hotel-description">{{ selectedHotel.description }}</div>
+  </div>
+</div>
+
+  </div>
 </template>
 
 <script>
@@ -40,6 +40,7 @@ export default {
     const imagePreview = ref(null);
     const searchResults = ref([]);
     const selectedHotel = ref(null);
+    const fetchDataButton = ref(null);
 
     const previewImage = (event) => {
       const fileInput = event.target;
@@ -47,7 +48,6 @@ export default {
         const reader = new FileReader();
         reader.onload = () => {
           imagePreview.value = reader.result;
-          
         };
         reader.readAsDataURL(fileInput.files[0]);
       } else {
@@ -61,7 +61,7 @@ export default {
         console.log('Image Preview value incorrect');
         return;
       }
-     
+
       var axios = require('axios');
       var config = {
         method: 'POST',
@@ -71,16 +71,12 @@ export default {
         },
         data: {
           "imgEncoded": imagePreview.value,
-          "numMatches": 50,
+          "numMatches": 1000,
         },
-
-      
       };
       axios(config)
         .then(function (response) {
           searchResults.value = response.data
-          console.log(searchResults.value)
-
         })
         .catch(function (error) {
           console.log(error);
@@ -98,8 +94,27 @@ export default {
 };
 </script>
 
+
 <style>
 
+body {
+  font-family: 'Open Sans', sans-serif;
+  font-size: 16px;
+  line-height: 1.5;
+}
+
+h1, h2 {
+  font-size: 2rem;
+  font-weight: bold;
+  color: var(--text-color);
+
+}
+
+label {
+  font-size: 1.2rem;
+  font-weight: bold;
+  color: var(--text-color);
+}
 
 .title{
   padding: 0px;
@@ -108,9 +123,13 @@ export default {
   text-align:center;
 }
 
+.result-image.selected {
+  border-color: #1100ff;
+}
+
 .searchResultsContainer {
   position: absolute;
-  top: 30px;
+  top: 40px;
   left: 30%;
   width: calc(65% - 20px);
   margin: 20px;
@@ -131,6 +150,8 @@ export default {
 .result-image {
   width: 150px;
   height: 150px;
+  border: 3px solid transparent;
+  cursor: pointer;
 }
 
 .hotel-name {
@@ -152,31 +173,60 @@ export default {
   overflow-y: scroll;
 }
 
-.preview-image {
+.panel label {
+  display: block;
+  margin-bottom: 10px;
+}
+
+.panel input[type="file"] {
+  margin-bottom: 20px;
+}
+
+.panel button {
+  background-color: #3366ff;
+  color: #fff;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.panel button:hover {
+  background-color: #0039e6;
+}
+
+.panel .preview-image {
   max-width: 100%;
   max-height: 300px;
   margin-top: 30px;
 }
 
-.hotel-info-modal {
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  background-color: #fff;
-  padding: 20px;
-  border-radius: 10px;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
-  z-index: 2;
-  max-width: 400px;
+.panel .hotel-info {
+  margin-top: 30px;
 }
 
-.hotel-info-modal-close {
-  position: absolute;
-  top: 0;
-  right: 0;
-  margin: 10px;
-  cursor: pointer;
+.panel .hotel-info h2 {
+  margin-top: 0;
 }
+
+.panel .hotel-info > div {
+  margin-bottom: 10px;
+  text-align: left;
+}
+
+.panel .hotel-info .hotel-name {
+  text-align: left;
+}
+
+.panel .hotel-info .hotel-description {
+  margin-top: 20px;
+  text-align: left;
+}
+
+.panel .hotel-info .hotel-description p {
+  margin-bottom: 10px;
+}
+
 
 </style>
