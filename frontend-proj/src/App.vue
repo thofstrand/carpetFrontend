@@ -70,13 +70,13 @@ export default {
       var axios = require('axios');
       var config = {
         method: 'POST',
-        url: '/api/images/MostSimilarImages',
+        url: 'http://52.36.76.233/api/images/MostSimilarImages',
         headers: {
           'Content-Type': 'application/json',
         },
         data: {
           "imgEncoded": imagePreview.value,
-          "numMatches": 1000, //num images returned which are sent to results container
+          "numMatches": 50, //num images returned which are sent to results container
         },
       };
       axios(config)
