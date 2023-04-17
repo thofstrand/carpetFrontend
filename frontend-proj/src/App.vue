@@ -3,6 +3,7 @@
     <div class="title">
       <h1>Carpet Search</h1>
       
+    <!--Search results from the api call -->
     </div>
     <div class="searchResultsContainer">
       <div class="searchResults" v-for="(result, index) in searchResults" :key="index">
@@ -10,7 +11,9 @@
       </div>
 
     </div>
+    <!--Side panel with file upload and hotel info -->
     <div class="panel">
+      <!--Image upload -->
   <label for="image-upload">Upload an image:</label>
   <div class="image-upload-container">
     <input id="image-upload" type="file" accept="image/*" v-on:change="previewImage">
@@ -20,6 +23,7 @@
     </div>
   </div>
   <hr>
+  <!--Selected hotel info -->
   <div class="hotel-info" v-if="selectedHotel">
     <h2>Selected Hotel</h2>
     <div class="hotel-name">{{ selectedHotel.hotelName }}</div>
@@ -42,6 +46,7 @@ export default {
     const selectedHotel = ref(null);
     const fetchDataButton = ref(null);
 
+    //This image will show the user what they have uploaded
     const previewImage = (event) => {
       const fileInput = event.target;
       if (fileInput.files && fileInput.files.length > 0) {
@@ -71,7 +76,7 @@ export default {
         },
         data: {
           "imgEncoded": imagePreview.value,
-          "numMatches": 1000,
+          "numMatches": 1000, //num images returned which are sent to results container
         },
       };
       axios(config)
