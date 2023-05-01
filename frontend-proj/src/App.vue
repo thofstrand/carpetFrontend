@@ -19,7 +19,9 @@
     <input id="image-upload" type="file" accept="image/*" v-on:change="previewImage">
     <div v-if="imagePreview">
       <img :src="imagePreview" alt="Preview image" class="preview-image">
+      <br>
       <button class="fetch-data-button" @click="makeApiRequest">Fetch Data</button>
+      
     </div>
   </div>
   <hr>
@@ -76,7 +78,7 @@ export default {
         },
         data: {
           "imgEncoded": imagePreview.value,
-          "numMatches": 50, //num images returned which are sent to results container
+          "numMatches": 500, //num images returned which are sent to results container
         },
       };
       axios(config)
